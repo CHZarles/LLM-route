@@ -1,5 +1,3 @@
-import math
-
 import torch
 from torch import nn
 
@@ -75,9 +73,43 @@ class FeedForward(nn.Module):
         return x
 
 
-if __name__ == "__main__":
-    # test transpose
-    a = torch.randn(2, 3, 4)
-    print(a)
-    print(a.transpose(-2, -1).shape)  # torch.Size([2, 4, 3])
-    print(a)
+class Norm(nn.Module):
+    def __init__(self, d_model, eps=1e-6):
+        super().__init__()
+        self.size = d_model
+
+        # create two learnable parameters to calibrate normalisation
+        self.alpha = nn.Parameter(torch.ones(self.size))
+        self.bias = nn.Parameter(torch.zeros(self.size))
+        self.eps = eps
+
+    def forward(self, x):
+        norm = (
+            self.alpha
+            * (x - x.mean(dim=-1, keepdim=True))
+            / (x.std(dim=-1, keepdim=True) + self.eps)
+            + self.bias
+        )
+        return norm
+
+
+class EncoderLayer(nn.Module):
+    def __init__(self, d_model, heads, dropout=0.1):
+        super().__init__()
+        self.norm_1 = Norm(d_model)
+        self_norm_2 = Norm(d_model)
+        self.attn = MultiHeadAttention(heads, d_model, dropout=dropout)
+        self.ff = FeedForward(d_model, dropout=dropout)
+        self.dropout_1 = nn.Dropout(dropout)
+        self.dropout_2 = nn.Dropout(dropout)
+
+    def forward(self, x, mask):
+        attn_output = self.attn(x, x, x, mask)
+        attn_output = self.dropout_1(attn_output)
+        x = x + attn_output
+        x = self.norm_1(x)
+        ff_output = self.ff(x)
+        ff_output = self.dropout_2(ff_output)
+        x = x + ff_output
+        x = self.norm_2(x)
+        return x

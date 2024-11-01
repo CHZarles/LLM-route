@@ -1,5 +1,20 @@
 CH2:
 
+attention 感性介绍, 这个文章介绍了单个 Attention/self.Attention 的机制，理解了这个再去看多头attention会比较好
+https://www.zywvvd.com/notes/study/deep-learning/transformer/transformer-intr/transformer-intr-1/
+
+这个讲了Transformer里面的 self-attention
+https://www.zywvvd.com/notes/study/deep-learning/transformer/transformer-intr/transformer-intr-2/
+
+补充embedding encode层：
+https://www.zywvvd.com/notes/study/deep-learning/transformer/transformer-intr/transformer-intr-3/
+
+pytorch 里面的varibable是什么：
+https://cloud.baidu.com/article/2488084
+
+向量嵌入：
+https://www.elastic.co/cn/what-is/vector-embedding
+
 向量序列：
 
 词元：
