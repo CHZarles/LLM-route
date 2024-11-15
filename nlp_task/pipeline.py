@@ -2,6 +2,8 @@ import json
 
 import datasets
 
+from bleu_metrics import BLEU
+
 model_checkpoint = "uer/t5-base-chinese-cluecorpussmall"
 
 
@@ -36,26 +38,18 @@ from transformers import AutoModelForSeq2SeqLM
 model = AutoModelForSeq2SeqLM.from_pretrained(model_checkpoint)
 
 # 4. 设置评估函数，评估函数用 BLUE1 - BLUE4 来评估模型的效果
-import evaluate
-import nltk
 import numpy as np
-
-metric = evaluate.load("bleu")
 
 # 参考 https://github.com/zyds/transformers-code/blob/master/02-NLP%20Tasks/15-text_summarization/summarization.ipynb
 
+bleu_evaluators = [BLEU(n_size=i+1) for i in range(4)]
 
 def compute_metrics(pred):
     print("call metrics")
     predictions, labels = pred
-    decode_preds = tokenizer.batch_decode(predictions, skip_special_tokens=True)
-    labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
-    decode_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
-    decode_preds = [" ".join(p) for p in decode_preds]
-    decode_labels = [" ".join(l) for l in decode_labels]
-    result = metric.compute(predictions=decode_preds, references=decode_labels)
-    print("result: ", result)
-    return result
+    for bleu_evaluator in bleu_evaluators:
+        bleu_evaluator.add_instance(prediction=predictions, references=[babels])
+    return [bleu.compute() for bleu in bleu_evaluators]
 
 
 # 5. 设置训练参数
@@ -70,7 +64,7 @@ train_args = Seq2SeqTrainingArguments(
     per_device_eval_batch_size=batch_size,
     weight_decay=0.01,
     save_total_limit=3,
-    num_train_epochs=1,
+    num_train_epochs=20,
     predict_with_generate=True,
     fp16=True,
 )
