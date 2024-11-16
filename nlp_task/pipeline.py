@@ -26,36 +26,50 @@ tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
 preprocess_function = partial(
     convert_example,
     tokenizer=tokenizer,
-    max_source_seq_len=512,
-    max_target_seq_len=512,
+    max_source_seq_len=256,
+    max_target_seq_len=32,
 )
 tokenized_datasets = raw_datasets.map(preprocess_function, batched=True)
 
+
+import torch
 
 # 3. 创建模型
 from transformers import AutoModelForSeq2SeqLM
 
 model = AutoModelForSeq2SeqLM.from_pretrained(model_checkpoint)
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model.to(device)
 
 # 4. 设置评估函数，评估函数用 BLUE1 - BLUE4 来评估模型的效果
 import numpy as np
 
 # 参考 https://github.com/zyds/transformers-code/blob/master/02-NLP%20Tasks/15-text_summarization/summarization.ipynb
 
-bleu_evaluators = [BLEU(n_size=i+1) for i in range(4)]
+bleu_evaluators = [BLEU(n_size=i + 1) for i in range(4)]
+
 
 def compute_metrics(pred):
     print("call metrics")
     predictions, labels = pred
-    for bleu_evaluator in bleu_evaluators:
-        bleu_evaluator.add_instance(prediction=predictions, references=[babels])
-    return [bleu.compute() for bleu in bleu_evaluators]
+    for prediction, label in zip(predictions, labels):
+        # print(prediction.shape)
+        # print(label.shape)
+        for bleu_evaluator in bleu_evaluators:
+            bleu_evaluator.add_instance(prediction=prediction, references=[label])
+    result = {
+        "bleu1": bleu_evaluators[0].compute(),
+        "bleu2": bleu_evaluators[1].compute(),
+        "bleu3": bleu_evaluators[2].compute(),
+        "bleu4": bleu_evaluators[3].compute(),
+    }
+    return result
 
 
 # 5. 设置训练参数
 from transformers import Seq2SeqTrainingArguments
 
-batch_size = 4
+batch_size = 16
 train_args = Seq2SeqTrainingArguments(
     "QuestionAnswer",
     evaluation_strategy="epoch",
@@ -64,7 +78,7 @@ train_args = Seq2SeqTrainingArguments(
     per_device_eval_batch_size=batch_size,
     weight_decay=0.01,
     save_total_limit=3,
-    num_train_epochs=20,
+    num_train_epochs=30,
     predict_with_generate=True,
     fp16=True,
 )
@@ -87,14 +101,14 @@ trainer = Seq2SeqTrainer(
 trainer.train()
 
 
-# 7. 保存模型
+# 7. 运行模型
 
 from transformers import pipeline
 
 pipe = pipeline("text2text-generation", model=model, tokenizer=tokenizer, device=0)
 
-context = "选择燃气热水器时，一定要关注这几个问题：1、出水稳定性要好，不能出现忽热忽冷的现象2、快速到达设定的需求水温3、操作要智能、方便4、安全性要好，要装有安全报警装置 市场上燃气热水器品牌众多，购买时还需多加对比和仔细鉴别。方太今年主打的磁化恒温热水器在使用体验方面做了全面升级：9秒速热，可快速进入洗浴模式；水温持久稳定，不会出现忽热忽冷的现象，并通过水量伺服技术将出水温度精确控制在±0.5℃，可满足家里宝贝敏感肌肤洗护需求；配备CO和CH4双气体报警装置更安全（市场上一般多为CO单气体报警）。另外，这款热水器还有智能WIFI互联功能，只需下载个手机APP即可用手机远程操作热水器，实现精准调节水温，满足家人多样化的洗浴需求。当然方太的磁化恒温系列主要的是增加磁化功能，可以有效吸附水中的铁锈、铁屑等微小杂质，防止细菌滋生，使沐浴水质更洁净，长期使用磁化水沐浴更利于身体健康。"
-question = "燃气热水器哪个牌子好"
+question = "治疗宫颈糜烂的最佳时间"
+context = "专家指出，宫颈糜烂治疗时间应选在月经干净后3-7日，因为治疗之后宫颈有一定的创面，如赶上月经期易发生感染。因此患者应在月经干净后3天尽快来医院治疗。同时应该注意，术前3天禁同房，有生殖道急性炎症者应治好后才可进行。"
 input_str = "问题：{question}{sep_token}原文：{context}".format(
     question=question, context=context, sep_token=tokenizer.sep_token
 )
