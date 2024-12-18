@@ -11,9 +11,10 @@
   - 学会看文档...
 
 > 需要【达到的效果】
-> ○ 会搭建深度学习环境和依赖包安装
-> ○ 会使用常见操作，例如matmul, sigmoid, softmax, linear, relu等
-> ○ dataset, dataloader, 损失函数，优化器的使用
-> ○ 会用gpu手写训练和预测一个模型
+>
+> - 会搭建深度学习环境和依赖包安装
+> - 会使用常见操作，例如matmul, sigmoid, softmax, linear, relu等
+> - dataset, dataloader, 损失函数，优化器的使用
+> - 会用gpu手写训练和预测一个模型
 
 ###
