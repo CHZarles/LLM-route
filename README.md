@@ -38,23 +38,18 @@
 
 ### 学习 Transformer/Bert/Gpt
 
-这部分资料很多，尽量多看，每个材料讲的角度都不一样。
+这部分资料很多，尽量多看，每个材料讲的角度都不一样。学习的时候要重点关注, 位置编码, Self-Attention, 多头注意力机制（必学）, 预测解码（必学）
 
-● 【图解+手撕底层原理】https://github.com/datawhalechina/learn-nlp-with-transformers/tree/main/docs/篇章2-Transformer相关原理
-● 【视频教程】https://www.bilibili.com/video/BV11v4y137sN
-● 【动手写transformer】https://github.com/datawhalechina/learn-nlp-with-transformers/blob/main/docs/篇章2-Transformer相关原理/2.2.1-Pytorch编写Transformer.ipynb
-● 【Transformer实战项目】：https://github.com/datawhalechina/learn-nlp-with-transformers/tree/main/docs/篇章4-使用Transformers解决NLP任务
+- 【图解+手撕底层原理】https://github.com/datawhalechina/learn-nlp-with-transformers/tree/main/docs/篇章2-Transformer相关原理
+- 【视频教程】https://www.bilibili.com/video/BV11v4y137sN
+- 【动手写transformer】https://github.com/datawhalechina/learn-nlp-with-transformers/blob/main/docs/篇章2-Transformer相关原理/2.2.1-Pytorch编写Transformer.ipynb
+- 【Transformer实战项目】：https://github.com/datawhalechina/learn-nlp-with-transformers/tree/main/docs/篇章4-使用Transformers解决NLP任务
+- 【Attention 讲解】 https://www.zywvvd.com/notes/study/deep-learning/transformer/transformer-intr/transformer-intr-1/
+- 【向量嵌入】：https://www.elastic.co/cn/what-is/vector-embedding
+- 【Transformer系列】https://towardsdatascience.com/transformers-explained-visually-part-1-overview-of-functionality-95a6dd460452
 
-[Attention 讲解](https://www.zywvvd.com/notes/study/deep-learning/transformer/transformer-intr/transformer-intr-1/)
-
-这个讲了Transformer里面的 self-attention
-https://www.zywvvd.com/notes/study/deep-learning/transformer/transformer-intr/transformer-intr-2/
-
-补充embedding encode层：
-https://www.zywvvd.com/notes/study/deep-learning/transformer/transformer-intr/transformer-intr-3/
-
-
-向量嵌入：
-https://www.elastic.co/cn/what-is/vector-embedding
-
-【Transformer系列】https://towardsdatascience.com/transformers-explained-visually-part-1-overview-of-functionality-95a6dd460452
+> 需要【达到的效果】
+>
+> - 手撕Transformer，能头到尾全部推导一遍
+> - 手写核心模块Self-Attention的代码，最后达到不看公式也能写出来
+> - 完成Transformer项目的数据处理和加载，预训练模型微调，模型预测，指标计算的完整项目流程，并总结实验报告。
