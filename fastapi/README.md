@@ -28,6 +28,28 @@ fastapi的异步并发web框架, https://fastapi.tiangolo.com/zh/async/#_1, 框�
 
 所以要用好这个框架，还是最好要先学会什么是python的 ”协程“
 
+### 经典协程
+
+> 相关背景知识 [Generator](./generator)
+
+- [A Curious Course on Coroutines and Concurrency 2009](http://www.dabeaz.com/coroutines/)
+  > 看完Part1 就能知道 协程函数 这个概念的来源
+  > 看完Part2 能知道协程函数组合pipeline的用法
+  > .. 未看
+
+#### 协程函数例子
+
+- 首先是要注意看上面材料 “Code Samples” 部分的例子 （上面的例子是python2的
+- 然后是要理解 “描述性编程” 这个概念。
+- 这些协程函数组合起来，也只是起到 pipeline 的作用，没法做到“乱序”的并发
+
+#### Core Conception
+
+- " If you use yield more generally, you get a coroutine"
+- " Instead, functions can consume values sent to it"
+
+### 协程（新）
+
 ## Fastapi + LLM 实践
 
 intro: https://www.bilibili.com/video/BV1UfWCeREy5/?vd_source=27d3b33a76014ebb5a906ad40fa382de
