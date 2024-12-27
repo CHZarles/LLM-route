@@ -35,7 +35,7 @@ fastapi的异步并发web框架, https://fastapi.tiangolo.com/zh/async/#_1, 框�
 - [A Curious Course on Coroutines and Concurrency 2009](http://www.dabeaz.com/coroutines/)
   > 看完Part1 就能知道 协程函数 这个概念的来源
   > 看完Part2 能知道协程函数组合pipeline的用法
-  > .. 未看
+  > Part3,4 ... 都是基于协程的高级封装，我还没看，如果要开发协程框架，那应该看一下
 
 #### 协程函数例子
 
@@ -48,7 +48,57 @@ fastapi的异步并发web框架, https://fastapi.tiangolo.com/zh/async/#_1, 框�
 - " If you use yield more generally, you get a coroutine"
 - " Instead, functions can consume values sent to it"
 
-### 协程（新）
+### 原生协程
+
+> 建议看一下 《流畅的python》chapter 21 ，里面比较详细地讲了 "原生协程" 和 "经典协程"
+
+我这里直接摘录书中的内容
+
+> 原生协程
+> 　　使用 async def 定义的协程函数。在原生协程内可以使用
+> await 关键字委托另一个原生协程，这类似于在经典协程中使用
+> yield from。async def 语句定义的始终是原生协程，即使主体中
+> 没有使用 await 关键字。await 关键字不能在原生协程外部使用。
+
+#### Asyncio 框架
+
+> 推荐书籍 《using-asyncio-python-understanding-asynchronous》
+
+这本书给出了使用asyncio的指导思想:
+
+> Yury Selivanov, the author of PEP 492 and all-round major contributor to async
+> Python, explained in his PyCon 2016 talk “async/await in Python 3.5 and Why It Is
+> Awesome,” that many of the APIs in the asyncio module are really intended for
+> framework designers, not end-user developers. In that talk, he emphasized the main
+> features that end users should care about. These are a small subset of the whole
+> asyncio API and can be summarized as follows
+> • Starting the asyncio event loop
+> • Calling async/await functions
+> • Creating a task to be run on the loop
+> • Waiting for multiple tasks to complete
+> • Closing the loop after all concurrent tasks have completed
+
+书中还对ayncio的api做了分层,到时候按需要去了解就好
+
+| Tier   | Level Concept Implementation                                                                           |
+| ------ | ------------------------------------------------------------------------------------------------------ |
+| Tier 9 | Network: streams `StreamReader`, `StreamWriter`, `asyncio.open_connection()`, `asyncio.start_server()` |
+| Tier 8 | Network: TCP & UDP Protocol                                                                            |
+| Tier 7 | Network: transports `BaseTransport`                                                                    |
+| Tier 6 | Tools `asyncio.Queue`                                                                                  |
+| Tier 5 | Subprocesses & threads `run_in_executor()`, `asyncio.subprocess`                                       |
+| Tier 4 | Tasks `asyncio.Task`, `asyncio.create_task()`                                                          |
+| Tier 3 | Futures `asyncio.Future`                                                                               |
+| Tier 2 | Event loop `asyncio.run()`, `BaseEventLoop`                                                            |
+| Tier 1 | (Base) Coroutines `async def`, `async with`, `async for`, `await`                                      |
+
+个人心得：
+
+- 多线程模型无法预测task切换的代码位置，但是用协程异步可以，因为协程函数的切换位置就是 await 调用处
+
+#### 实战
+
+参考这里面和 async 相关的 https://github.com/mCodingLLC/VideosSampleCode/tree/master
 
 ## Fastapi + LLM 实践
 
