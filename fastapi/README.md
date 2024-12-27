@@ -103,3 +103,7 @@ fastapi的异步并发web框架, https://fastapi.tiangolo.com/zh/async/#_1, 框�
 ## Fastapi + LLM 实践
 
 intro: https://www.bilibili.com/video/BV1UfWCeREy5/?vd_source=27d3b33a76014ebb5a906ad40fa382de
+
+### Openai api 标准
+
+把llm推理服务部署成类Openai的形式，参考
