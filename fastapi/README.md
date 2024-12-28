@@ -106,4 +106,64 @@ intro: https://www.bilibili.com/video/BV1UfWCeREy5/?vd_source=27d3b33a76014ebb5a
 
 ### Openai api 标准
 
-把llm推理服务部署成类Openai的形式，参考
+把llm推理服务部的对外接口署成和Openai api的协议形式。
+
+补充阅读：
+
+[OpenAI api 国内中文文档](https://openai.xiniushu.com/docs/guides/chat)
+
+[OpenAI API (二) 对话补全（Chat completions)](https://zhuanlan.zhihu.com/p/647532219)
+
+[方糖技能栈-gpt](https://github.com/easychen/openai-gpt-dev-notes-for-cn-developer)
+
+[手把手教会你如何通过ChatGPT API实现上下文对话](https://juejin.cn/post/7217360688263004217)
+
+#### OpenAI 的Create chat completion 里面的 streaming 是指什么？
+
+[OpenAI API （五）Chat Completion中的stream处理](https://zhuanlan.zhihu.com/p/651129737)
+
+要调试这些api的用法，可以在tb买一些api自己调试着玩，api都是类似的,只是可能没有openai官方的那么全
+
+> backup: https://apifox.com/apidoc/project-4798344/doc-5309262
+
+结合pydantic + fastapi 实现openai api的具体例子见[openai_api.py](./chatglm6b_deploy/openai_api.py),
+
+### 实践
+
+开启server
+
+```bash
+python ./chatglm6b_deploy/openai_api.py
+```
+
+测试请求
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/v1/chat/completions' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "messages": [
+        {  "role": "system",
+           "content":"你是人工智能助手"
+         },
+        {
+            "role": "user",
+            "content":"海贼王作者是谁"
+        },
+       {
+        "role": "assistant",
+        "content": "海贼王的作者是中国漫画家藤本树。"
+       },
+       {"role":"user", "content":"他出生时间是什么"}
+    ],
+    "stream": false,
+    "model": "gpt-3.5-turbo",
+    "temperature": 0.5,
+    "max_length": 100,
+    "top_p": 1
+}
+'
+
+```
