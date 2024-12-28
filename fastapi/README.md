@@ -72,11 +72,12 @@ fastapi的异步并发web框架, https://fastapi.tiangolo.com/zh/async/#_1, 框�
 > framework designers, not end-user developers. In that talk, he emphasized the main
 > features that end users should care about. These are a small subset of the whole
 > asyncio API and can be summarized as follows
-> • Starting the asyncio event loop
-> • Calling async/await functions
-> • Creating a task to be run on the loop
-> • Waiting for multiple tasks to complete
-> • Closing the loop after all concurrent tasks have completed
+>
+> - Starting the asyncio event loop
+> - Calling async/await functions
+> - Creating a task to be run on the loop
+> - Waiting for multiple tasks to complete
+> - Closing the loop after all concurrent tasks have completed
 
 书中还对ayncio的api做了分层,到时候按需要去了解就好
 
@@ -164,6 +165,4 @@ curl -X 'POST' \
     "max_length": 100,
     "top_p": 1
 }
-'
-
 ```
