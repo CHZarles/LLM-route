@@ -97,6 +97,8 @@ fastapi的异步并发web框架, https://fastapi.tiangolo.com/zh/async/#_1, 框�
 
 - 多线程模型无法预测task切换的代码位置，但是用协程异步可以，因为协程函数的切换位置就是 await 调用处
 
+#### 协程编程 gevent
+
 #### 实战
 
 参考这里面和 async 相关的 https://github.com/mCodingLLC/VideosSampleCode/tree/master
@@ -198,8 +200,7 @@ fastapi 的 websocket 的写法也很简单，参考 ./chatglm6b_deploy/test_web
 
 参考：https://blog.csdn.net/liuzhenghua66/article/details/139332747
 
-> 这个压测sample用来qwen模型，但是qwen这个模型太大了，我想着用chatglm
-> 但前者是预训练模型返回的是tokenid？反正就是一个数，后者是推理结果。
+> 这个压测sample用来qwen模型，但是qwen这个模型太大了，我这里改用 chatglm 测试
 
 #### LLM压测的必要性
 

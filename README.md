@@ -48,6 +48,7 @@
 - 【Attention 讲解】 https://www.zywvvd.com/notes/study/deep-learning/transformer/transformer-intr/transformer-intr-1/
 - 【向量嵌入】：https://www.elastic.co/cn/what-is/vector-embedding
 - 【Transformer系列】https://towardsdatascience.com/transformers-explained-visually-part-1-overview-of-functionality-95a6dd460452
+- 【比较体系的文档 How-to-use-Transformers 】https://github.com/jsksxs360/How-to-use-Transformers
 
 > 需要【达到的效果】
 >
