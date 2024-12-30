@@ -289,12 +289,14 @@ async def predict(query: str, history: List[List[str]], model_id: str):
 
 if __name__ == "__main__":
     tokenizer = AutoTokenizer.from_pretrained(
-        "./model/chatglm-6b-int4", trust_remote_code=True
+        "./model/chatglm-6b-int4",
+        # "THUDM/chatglm-6b-int4",
+        trust_remote_code=True,
     )
     model = (
         AutoModel.from_pretrained("./model/chatglm-6b-int4", trust_remote_code=True)
-        .half()
-        .cuda()
+        # AutoModel.from_pretrained("THUDM/chatglm-6b-int4", trust_remote_code=True)
+        .half().cuda()
     )
     # tokenizer = AutoTokenizer.from_pretrained(
     #     "THUDM/chatglm2-6b-int4", trust_remote_code=True

@@ -9,6 +9,7 @@
 - 进阶知识
   - [《PyTorch深度学习实践》完结合集](https://www.bilibili.com/video/BV1Y7411d7Ys/?spm_id_from=333.337.search-card.all.click&vd_source=27d3b33a76014ebb5a906ad40fa382de)
   - 学会看文档...
+- https://www.huaxiaozhuan.com/
 
 > 需要【达到的效果】
 >

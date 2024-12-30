@@ -105,7 +105,7 @@ fastapi的异步并发web框架, https://fastapi.tiangolo.com/zh/async/#_1, 框�
 
 intro: https://www.bilibili.com/video/BV1UfWCeREy5/?vd_source=27d3b33a76014ebb5a906ad40fa382de
 
-### Openai api 标准
+### OpenAI标准服务制作方法
 
 把llm推理服务部的对外接口署成和Openai api的协议形式。
 
@@ -129,7 +129,7 @@ intro: https://www.bilibili.com/video/BV1UfWCeREy5/?vd_source=27d3b33a76014ebb5a
 
 结合pydantic + fastapi 实现openai api的具体例子见[openai_api.py](./chatglm6b_deploy/openai_api.py),
 
-### 实践
+#### 实践
 
 开启server
 
@@ -166,3 +166,45 @@ curl -X 'POST' \
     "top_p": 1
 }
 ```
+
+### websocket流式输出（长连接）
+
+查看源码: ./chatglm6b_deploy/websocket_api.py
+
+这个代码有个问题就算是同一时间只能有一个client查询,server也没办法同时回应多个response
+
+如果要用postman测试这个代码，请求体的内容要按下面的格式来
+
+```
+{
+  "query": "I want to drive car",
+  "history": [
+    [
+      "hhh",
+      "I'm sorry, but I'm not sure what you're asking me. Can you please provide more context or clarify your question?"
+    ],
+    [
+      "how are you",
+      "As an AI language model, I don't have feelings in the same way that humans do, but I'm functioning properly and ready to assist you with any questions or tasks you may have. How can I assist you today?"
+    ]
+  ]
+}
+
+```
+
+fastapi 的 websocket 的写法也很简单，参考 ./chatglm6b_deploy/test_websocket.py
+
+### LLM 部署 压力测试
+
+参考：https://blog.csdn.net/liuzhenghua66/article/details/139332747
+
+> 这个压测sample用来qwen模型，但是qwen这个模型太大了，我想着用chatglm
+> 但前者是预训练模型返回的是tokenid？反正就是一个数，后者是推理结果。
+
+#### LLM压测的必要性
+
+1. **性能评估**：压测能揭示模型在高负载下的响应时间和吞吐量，找出性能瓶颈。
+2. **系统稳定性**：模拟高负载场景，确保模型在突发流量时稳定运行。
+3. **扩展能力**：评估系统在增加负载时的可扩展性，检查扩展过程中的瓶颈。
+4. **资源利用率优化**：分析高负载下的资源使用，优化配置，提高效率。
+5. **发现潜在问题**：找出在高负载下可能出现的问题，如内存泄漏和连接超时，为优化提供依据。
