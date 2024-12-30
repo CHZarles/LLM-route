@@ -81,23 +81,21 @@ def sample_requests(
     num_requests: int,
     tokenizer: "PreTrainedTokenizerBase",
 ) -> List[Tuple[str, int, int]]:
-    if True:
-        with open("./split.json") as f:
-            dataset = json.load(f)
-    else:
-        # Load the dataset
-        with open(dataset_path) as f:
-            dataset = json.load(f)
-        # Filter out the conversations with less than 2 turns.
-        dataset = [data for data in dataset if len(data["conversations"]) >= 2]
-        # Only keep the first two turns of each conversation.
-        dataset = [
-            (data["conversations"][0]["value"], data["conversations"][1]["value"])
-            for data in dataset
-        ]
-        # # save the dataset
-        # with open("./split.json", "w") as f:
-        #     json.dump(dataset, f)
+    # Load the dataset
+    with open(dataset_path) as f:
+        dataset = json.load(f)
+    # Filter out the conversations with less than 2 turns.
+    dataset = [data for data in dataset if len(data["conversations"]) >= 2]
+    # Only keep the first two turns of each conversation.
+    dataset = [
+        (data["conversations"][0]["value"], data["conversations"][1]["value"])
+        for data in dataset
+    ]
+    # hack
+    dataset = dataset[:10]
+    # # save the dataset
+    # with open("./split.json", "w") as f:
+    #     json.dump(dataset, f)
     # Tokenize the prompts and completions(input_msg, input_token_len, output_token_len).
     tokenized_dataset = []
     prompts = [prompt for prompt, _ in dataset]
