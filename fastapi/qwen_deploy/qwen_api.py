@@ -11,7 +11,7 @@ class Qwen:
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
 
     def generate_response(self, messages):
-        inputs = self.build_inputs(query, history=history)
+        # inputs = self.build_inputs(query, history=history)
         text = self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
         )
@@ -36,7 +36,6 @@ class Qwen:
 if __name__ == "__main__":
     qwen = Qwen()
     prompt = input("input your prompt: ")
-    prompt = input("input your prompt:")
     messages = [
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": prompt},
