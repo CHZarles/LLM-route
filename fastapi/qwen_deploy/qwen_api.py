@@ -16,7 +16,7 @@ class Qwen:
             messages, tokenize=False, add_generation_prompt=True
         )
         model_inputs = self.tokenizer([text], return_tensors="pt").to(self.device)
-        input_token_count = len(model_inputs.input_ids)
+        input_token_count = len(model_inputs["input_ids"][0])
         generated_ids = self.model.generate(model_inputs.input_ids, max_new_tokens=512)
         generated_ids = [
             output_ids[len(input_ids) :]
