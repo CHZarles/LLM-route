@@ -36,5 +36,10 @@ class Qwen:
 if __name__ == "__main__":
     qwen = Qwen()
     prompt = input("input your prompt: ")
-    response = qwen.generate_response(prompt)
+    prompt = input("input your prompt:")
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": prompt},
+    ]
+    response = qwen.generate_response(messages)
     print("response: ", response)
