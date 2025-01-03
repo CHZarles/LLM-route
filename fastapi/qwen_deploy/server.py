@@ -118,7 +118,11 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
-            data = await websocket.receive_text()
+            data = await websocket.receive_json()
+            print("receive json_request from request is\n", type(json_request))
+            query = json_request["query"]
+            history = json_request["history"]
+            print("receive history from request is\n", history)
             await websocket.send_text(f"At {time.time()} Message text was: {data}")
     except WebSocketDisconnect:
         print("Client disconnected")
@@ -126,4 +130,3 @@ async def websocket_endpoint(websocket: WebSocket):
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000, workers=1)
-

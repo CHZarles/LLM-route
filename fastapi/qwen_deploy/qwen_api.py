@@ -1,4 +1,4 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, TextStreamer
 
 
 class Qwen:
@@ -9,15 +9,31 @@ class Qwen:
         )
         self.model.eval()
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        self.streamer = TextStreamer(
+            self.tokenizer, skip_prompt=True, skip_special_tokens=True
+        )
 
-    def generate_response(self, messages):
+    def stream_chat(self, messages):
+        return self.generate_response(messages, stream=True)
+
+    def generate_response(self, messages, stream=False):
         # inputs = self.build_inputs(query, history=history)
         text = self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
         )
         model_inputs = self.tokenizer([text], return_tensors="pt").to(self.device)
         input_token_count = len(model_inputs["input_ids"][0])
-        generated_ids = self.model.generate(model_inputs.input_ids, max_new_tokens=512)
+        if stream:
+            # https://qwen.readthedocs.io/en/latest/getting_started/quickstart.html
+            generated_ids = self.model.generate(
+                **model_inputs,
+                max_new_tokens=512,
+                streamer=self.streamer,
+            )
+        else:
+            generated_ids = self.model.generate(
+                model_inputs.input_ids, max_new_tokens=512
+            )
         generated_ids = [
             output_ids[len(input_ids) :]
             for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
@@ -42,3 +58,7 @@ if __name__ == "__main__":
     ]
     response = qwen.generate_response(messages)
     print("response: ", response)
+
+    # test stream_chat
+    for response in qwen.stream_chat(messages):
+        print("response: ", response)
