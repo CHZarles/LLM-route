@@ -6,6 +6,7 @@ from typing import List, Tuple
 
 import aiohttp
 import numpy as np
+
 from util import get_tokenizer, sample_requests
 
 logger = logging.getLogger(__name__)
@@ -55,9 +56,9 @@ async def benchmark(
 
 def main():
     logger.info("Preparing for benchmark.")
-    dataset_path = r"ShareGPT_V3_unfiltered_cleaned_split.json"
+    dataset_path = r"../test_data/ShareGPT_V3_unfiltered_cleaned_split.json"
     # tokenizer_name_or_path = "qwen/Qwen1.5-7B-Chat"
-    tokenizer_name_or_path = "../chatglm6b_deploy/model/chatglm-6b-int4"
+    tokenizer_name_or_path = "./qwen/qwen1.5-7b-chat"
     num_request = 10
     # tokenizer = get_tokenizer(tokenizer_name_or_path)
     tokenizer = get_tokenizer(
