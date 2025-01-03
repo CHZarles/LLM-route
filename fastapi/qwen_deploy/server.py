@@ -63,7 +63,7 @@ async def list_models():
     return ModelList(data=[ModelCard(id="qwen/qwen1.5-7b-chat")])
 
 
-@app.get("/v1/chat/completions", response_model=ChatCompletionResponse)
+@app.post("/v1/chat/completions", response_model=ChatCompletionResponse)
 async def create_chat_completion(request: ChatCompletionRequest):
     if request.messages[-1].role != "user":
         raise HTTPException(status_code=400, detail="Invalid request")
