@@ -32,7 +32,7 @@ thread.start()
 
 generated_text = ""
 for new_text in streamer:
-generated_text += new_text
+    generated_text += new_text
 # yield generated_text
 print('####################################')
 print(generated_text)`
