@@ -8,7 +8,7 @@ from transformers import (
 )
 
 device = "cuda"  # 加载模型的设备
-model_path = "./qwen/Qwen1.5-7B-Chat"  # 模型路径
+model_path = "./Qwen/Qwen1.5-7B-Chat"  # 模型路径
 generation_config = GenerationConfig.from_pretrained(model_path)
 model = AutoModelForCausalLM.from_pretrained(model_path, device_map="auto")
 tokenizer = AutoTokenizer.from_pretrained(model_path)
