@@ -33,6 +33,7 @@ async def send_request(session, payload, prompt_len):
         else:
             return {"error": response.status, "message": await response.text()}
 
+MODEL_UID="Qwen1.5-7B-Chat"
 
 async def benchmark(
     input_requests: List[Tuple[str, int, int]],
@@ -58,7 +59,7 @@ def main():
     logger.info("Preparing for benchmark.")
     dataset_path = r"../test_data/ShareGPT_V3_unfiltered_cleaned_split.json"
     # tokenizer_name_or_path = "qwen/Qwen1.5-7B-Chat"
-    tokenizer_name_or_path = "./qwen/qwen1.5-7b-chat"
+    tokenizer_name_or_path = "./Qwen/Qwen1.5-7B-Chat"
     num_request = 10
     # tokenizer = get_tokenizer(tokenizer_name_or_path)
     tokenizer = get_tokenizer(
