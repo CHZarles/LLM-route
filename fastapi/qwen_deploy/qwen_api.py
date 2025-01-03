@@ -9,10 +9,11 @@ class Qwen:
         )
         self.model.eval()
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        # not useful at all
         self.streamer = TextStreamer(
             self.tokenizer, skip_prompt=True, skip_special_tokens=True
         )
-
+    # not useful at all
     def stream_chat(self, messages):
         return self.generate_response(messages, stream=True)
 
@@ -59,6 +60,6 @@ if __name__ == "__main__":
     response = qwen.generate_response(messages)
     print("response: ", response)
 
-    # test stream_chat
-    for response in qwen.stream_chat(messages):
-        print("response: ", response)
+    # test stream_chat, the ans will be output to terminal
+    print(" =======================> test stream_chat <========================== ")
+    stream_response = qwen.stream_chat(messages)
