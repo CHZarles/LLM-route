@@ -14,6 +14,7 @@ class Qwen:
         self.streamer = TextStreamer(
             self.tokenizer, skip_prompt=True, skip_special_tokens=True
         )
+
     # not useful at all
     async def stream_chat(self, messages):
         text = self.tokenizer.apply_chat_template(
@@ -21,15 +22,16 @@ class Qwen:
         )
         model_inputs = self.tokenizer([text], return_tensors="pt").to(self.device)
         input_token_count = len(model_inputs["input_ids"][0])
-        streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
+        streamer = TextIteratorStreamer(
+            tokenizer, skip_prompt=True, skip_special_tokens=True
+        )
         generation_kwargs = dict(model_inputs, streamer=streamer, max_new_tokens=2048)
         await model.generate(**generation_kwargs)
-        
+
         generated_text = ""
         for new_text in streamer:
             generated_text += new_text
             yield generated_text
-    
 
     def generate_response(self, messages, stream=False):
         # inputs = self.build_inputs(query, history=history)
@@ -38,8 +40,8 @@ class Qwen:
         )
         model_inputs = self.tokenizer([text], return_tensors="pt").to(self.device)
         input_token_count = len(model_inputs["input_ids"][0])
-        if stream: 
-            throw NotImplementedError("streaming is not implemented")
+        if stream:
+            raise NotImplementedError("streaming is not implemented")
             # https://qwen.readthedocs.io/en/latest/getting_started/quickstart.html
             # generated_ids = self.model.generate(
             #     **model_inputs,
