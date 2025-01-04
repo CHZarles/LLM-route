@@ -165,10 +165,8 @@ async def websocket_endpoint(websocket: WebSocket):
             query = json_request["query"]
             history = json_request["history"]
             messages = []
-            for message in history:
-                messages.append(
-                    {"role": message["role"], "content": message["content"]}
-                )
+            for role, content in history:
+                messages.append({"role": role, "content": content})
             messages.append({"role": "user", "content": query})
             history.append({"role": "assistant", "content": ""})
             async for response in qwen_model.stream_chat(messages):
