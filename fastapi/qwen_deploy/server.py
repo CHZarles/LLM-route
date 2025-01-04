@@ -53,6 +53,7 @@ async def list_models():
     return ModelList(data=[ModelCard(id="qwen/qwen1.5-7b-chat")])
 
 
+# curl -X POST "http://localhost:8000/v1/chat/completions" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"model\":\"qwen/qwen1.5-7b-chat\",\"messages\":[{\"role\":\"user\",\"content\":\"Hello, how are you?\"}]}"
 @app.post("/v1/chat/completions", response_model=ChatCompletionResponse)
 async def create_chat_completion(request: ChatCompletionRequest):
     if request.messages[-1].role != "user":
@@ -69,7 +70,6 @@ async def create_chat_completion(request: ChatCompletionRequest):
     for message in request.messages:
         messages.append({"role": message.role, "content": message.content})
 
-    # TODO: implement the following logic
     if request.stream:
         # HTTPException(status_code=400, detail="stream not supported")
         generate = stream_chat_warpper(messages, request.model)
@@ -100,7 +100,7 @@ async def create_chat_completion(request: ChatCompletionRequest):
 
 
 async def stream_chat_warpper(message, model_id: str):
-    global model, tokenizer
+    global qwen_model
 
     # 3. 初始化响应数据
     choice_data = ChatCompletionResponseStreamChoice(
@@ -147,7 +147,8 @@ async def stream_chat_warpper(message, model_id: str):
     yield "[DONE]"
 
 
-@app.websocket("/ws")
+# wscat -c ws://localhost:8000/chat/completions/ws
+@app.websocket("/ChatCompletion/ws")
 async def websocket_endpoint(websocket: WebSocket):
     """
     input: JSON String of {"query": "", "history": []}
@@ -160,10 +161,26 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             data = await websocket.receive_json()
             print("receive json_request from request is\n", type(json_request))
+            # 模仿这个格式 ./../chatglm6b_deploy/websocket_api.py
             query = json_request["query"]
             history = json_request["history"]
-            print("receive history from request is\n", history)
-            await websocket.send_text(f"At {time.time()} Message text was: {data}")
+            messages = []
+            for message in history:
+                messages.append(
+                    {"role": message["role"], "content": message["content"]}
+                )
+            messages.append({"role": "user", "content": query})
+            history.append({"role": "assistant", "content": ""})
+            async for response in model.stream_chat(message):
+                history[-1]["content"] = response
+                await websocket.send_json(
+                    {
+                        "response": response,
+                        "history": history,
+                        "status": 202,
+                    }
+                )
+            await websocket.send_json({"status": 200})
     except WebSocketDisconnect:
         print("Client disconnected")
 

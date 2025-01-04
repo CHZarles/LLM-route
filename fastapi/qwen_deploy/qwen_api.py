@@ -45,12 +45,6 @@ class Qwen:
         input_token_count = len(model_inputs["input_ids"][0])
         if stream:
             raise NotImplementedError("streaming is not implemented")
-            # https://qwen.readthedocs.io/en/latest/getting_started/quickstart.html
-            # generated_ids = self.model.generate(
-            #     **model_inputs,
-            #     max_new_tokens=512,
-            #     streamer=self.streamer,
-            # )
         else:
             generated_ids = self.model.generate(
                 model_inputs.input_ids, max_new_tokens=512

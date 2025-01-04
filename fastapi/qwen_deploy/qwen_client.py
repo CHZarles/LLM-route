@@ -28,6 +28,24 @@ if not stream:
     else:
         print("Failed to get response:", response.status_code, response.text)
 else:
+    # NOTE: 实际测试中这个代码还是会一次把结果打印回来,我期望的效果是下面这种
+    """
+    curl -X POST  http://localhost:8000/v1/chat/completions   -H "Content-Type: application/json" `
+    -d '{
+        "model": "qwen1.5-7b-chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a helpful assistant."
+          },
+          {
+            "role": "user",
+            "content": "Hello!"
+          }
+        ],
+        "stream": true
+      }'
+    """
     if response.status_code == 200:
         # handle steam response
         for chunk in response.iter_content(chunk_size=1024):
