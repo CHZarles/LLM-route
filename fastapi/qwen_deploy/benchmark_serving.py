@@ -93,7 +93,7 @@ def main():
     # tokenizer_name_or_path = "qwen/Qwen1.5-7B-Chat"
     tokenizer_name_or_path = "./Qwen/Qwen1.5-7B-Chat"
     num_request = 20
-    concurrency = 10
+    concurrency = 3
     logger.info("Preparing for benchmark.")
     # tokenizer = get_tokenizer(tokenizer_name_or_path)
     tokenizer = get_tokenizer(
