@@ -10,18 +10,7 @@ from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.generation import GenerationConfig
 
-from message_type import (
-    ChatCompletionRequest,
-    ChatCompletionResponse,
-    ChatCompletionResponseChoice,
-    ChatCompletionResponseStreamChoice,
-    ChatMessage,
-    CompletionTokensDetails,
-    DeltaMessage,
-    ModelList,
-    PromptTokensDetails,
-    Usage,
-)
+from message_type import *
 from qwen_api import Qwen
 
 qwen_model = None
@@ -110,7 +99,7 @@ async def create_chat_completion(request: ChatCompletionRequest):
     return res
 
 
-async def stream_chat_warpper(message: List[List[str]], model_id: str):
+async def stream_chat_warpper(message, model_id: str):
     global model, tokenizer
 
     # 3. 初始化响应数据
