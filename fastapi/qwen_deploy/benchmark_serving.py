@@ -63,7 +63,7 @@ class BenchMarkRunner:
         await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
 
     async def worker(self):
-        timeout = aiohttp.ClientTimeout(total=50 * 60)
+        timeout = aiohttp.ClientTimeout(total=50)
         async with aiohttp.ClientSession(timeout=timeout) as session:
             while self.request_left > 0:
                 prompt, prompt_len, completion_len = await self.request_queue.get()
