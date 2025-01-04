@@ -1,3 +1,4 @@
+from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 from transformers import AutoModelForCausalLM, AutoTokenizer, TextStreamer
 
 
@@ -14,8 +15,21 @@ class Qwen:
             self.tokenizer, skip_prompt=True, skip_special_tokens=True
         )
     # not useful at all
-    def stream_chat(self, messages):
-        return self.generate_response(messages, stream=True)
+    async def stream_chat(self, messages):
+        text = self.tokenizer.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True
+        )
+        model_inputs = self.tokenizer([text], return_tensors="pt").to(self.device)
+        input_token_count = len(model_inputs["input_ids"][0])
+        streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
+        generation_kwargs = dict(model_inputs, streamer=streamer, max_new_tokens=2048)
+        await model.generate(**generation_kwargs)
+        
+        generated_text = ""
+        for new_text in streamer:
+            generated_text += new_text
+            yield generated_text
+    
 
     def generate_response(self, messages, stream=False):
         # inputs = self.build_inputs(query, history=history)
@@ -24,13 +38,14 @@ class Qwen:
         )
         model_inputs = self.tokenizer([text], return_tensors="pt").to(self.device)
         input_token_count = len(model_inputs["input_ids"][0])
-        if stream:
+        if stream: 
+            throw NotImplementedError("streaming is not implemented")
             # https://qwen.readthedocs.io/en/latest/getting_started/quickstart.html
-            generated_ids = self.model.generate(
-                **model_inputs,
-                max_new_tokens=512,
-                streamer=self.streamer,
-            )
+            # generated_ids = self.model.generate(
+            #     **model_inputs,
+            #     max_new_tokens=512,
+            #     streamer=self.streamer,
+            # )
         else:
             generated_ids = self.model.generate(
                 model_inputs.input_ids, max_new_tokens=512
@@ -63,3 +78,5 @@ if __name__ == "__main__":
     # test stream_chat, the ans will be output to terminal
     print(" =======================> test stream_chat <========================== ")
     stream_response = qwen.stream_chat(messages)
+    for res in stream_response:
+        print(res)
