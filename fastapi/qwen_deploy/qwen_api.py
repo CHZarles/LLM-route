@@ -1,6 +1,11 @@
 import asyncio
 
-from transformers import AutoModelForCausalLM, AutoTokenizer, TextStreamer
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    GenerationConfig,
+    TextIteratorStreamer,
+)
 
 
 class Qwen:
@@ -11,10 +16,6 @@ class Qwen:
         )
         self.model.eval()
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
-        # not useful at all
-        self.streamer = TextStreamer(
-            self.tokenizer, skip_prompt=True, skip_special_tokens=True
-        )
 
     # not useful at all
     async def stream_chat(self, messages):
@@ -23,7 +24,7 @@ class Qwen:
         )
         model_inputs = self.tokenizer([text], return_tensors="pt").to(self.device)
         streamer = TextIteratorStreamer(
-            tokenizer, skip_prompt=True, skip_special_tokens=True
+            self.tokenizer, skip_prompt=True, skip_special_tokens=True
         )
         generation_kwargs = dict(model_inputs, streamer=streamer, max_new_tokens=2048)
         await self.model.generate(**generation_kwargs)
