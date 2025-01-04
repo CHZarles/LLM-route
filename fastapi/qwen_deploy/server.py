@@ -148,7 +148,7 @@ async def stream_chat_warpper(message, model_id: str):
 
 
 # wscat -c ws://localhost:8000/chat/completions/ws
-@app.websocket("/ChatCompletion/ws")
+@app.websocket("/chat/completions/ws")
 async def websocket_endpoint(websocket: WebSocket):
     """
     input: JSON String of {"query": "", "history": []}
