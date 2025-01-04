@@ -171,7 +171,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 )
             messages.append({"role": "user", "content": query})
             history.append({"role": "assistant", "content": ""})
-            async for response in model.stream_chat(message):
+            async for response in qwen_model.stream_chat(message):
                 history[-1]["content"] = response
                 await websocket.send_json(
                     {
