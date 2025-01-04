@@ -1,4 +1,5 @@
 import asyncio
+from threading import Thread
 
 from transformers import (
     AutoModelForCausalLM,
@@ -27,12 +28,14 @@ class Qwen:
             self.tokenizer, skip_prompt=True, skip_special_tokens=True
         )
         generation_kwargs = dict(model_inputs, streamer=streamer, max_new_tokens=2048)
-        await self.model.generate(**generation_kwargs)
+        thread = Thread(target=self.model.generate, kwargs=generation_kwargs)
 
+        thread.start()
         generated_text = ""
         for new_text in streamer:
             generated_text += new_text
             yield generated_text
+        thread.join()
 
     def generate_response(self, messages, stream=False):
         # inputs = self.build_inputs(query, history=history)
