@@ -20,12 +20,11 @@ class Qwen:
             messages, tokenize=False, add_generation_prompt=True
         )
         model_inputs = self.tokenizer([text], return_tensors="pt").to(self.device)
-        input_token_count = len(model_inputs["input_ids"][0])
         streamer = TextIteratorStreamer(
             tokenizer, skip_prompt=True, skip_special_tokens=True
         )
         generation_kwargs = dict(model_inputs, streamer=streamer, max_new_tokens=2048)
-        await model.generate(**generation_kwargs)
+        await self.model.generate(**generation_kwargs)
 
         generated_text = ""
         for new_text in streamer:
