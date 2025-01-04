@@ -78,6 +78,9 @@ if __name__ == "__main__":
 
     # test stream_chat, the ans will be output to terminal
     print(" =======================> test stream_chat <========================== ")
-    stream_response = qwen.stream_chat(messages)
-    for res in stream_response:
-        print(res)
+
+    async def test_stream():
+        async for res in qwen.stream_chat(messages):
+            print(res)
+
+    asyncio.run(test_stream())
