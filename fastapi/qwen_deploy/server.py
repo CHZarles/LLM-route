@@ -159,7 +159,7 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
-            data = await websocket.receive_json()
+            json_request = await websocket.receive_json()
             print("receive json_request from request is\n", type(json_request))
             # 模仿这个格式 ./../chatglm6b_deploy/websocket_api.py
             query = json_request["query"]
