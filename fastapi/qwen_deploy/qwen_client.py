@@ -28,11 +28,10 @@ if not stream:
     else:
         print("Failed to get response:", response.status_code, response.text)
 else:
-    # handle steam response
     if response.status_code == 200:
-        for line in response.iter_lines():
-            if line:
-                decoded_line = line.decode("utf-8")
-                print("Streamed Response:", decoded_line)
+        # handle steam response
+        for chunk in response.iter_content(chunk_size=1024):
+            # 处理响应内容
+            print(chunk.decode("utf-8"))
     else:
         print("Failed to get response:", response.status_code, response.text)
