@@ -1,4 +1,3 @@
-from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 from transformers import AutoModelForCausalLM, AutoTokenizer, TextStreamer
 
 
