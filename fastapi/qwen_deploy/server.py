@@ -118,7 +118,7 @@ async def stream_chat_warpper(message, model_id: str):
     current_length = 0
 
     # 5. 处理模型的流式响应
-    for new_response in qwen_model.stream_chat(message):
+    async for new_response in qwen_model.stream_chat(message):
         # - 如果新响应的长度与当前长度相同，则跳过。
         if len(new_response) == current_length:
             continue
