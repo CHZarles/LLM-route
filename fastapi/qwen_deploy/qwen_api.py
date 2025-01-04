@@ -18,7 +18,6 @@ class Qwen:
         self.model.eval()
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
 
-    # not useful at all
     async def stream_chat(self, messages):
         text = self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True

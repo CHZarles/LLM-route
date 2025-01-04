@@ -6,6 +6,7 @@ import uvicorn
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers.generation import GenerationConfig
 
@@ -68,10 +69,6 @@ async def create_chat_completion(request: ChatCompletionRequest):
     if request.messages[-1].role != "user":
         raise HTTPException(status_code=400, detail="Invalid request")
 
-    # TODO: implement the following logic
-    if request.stream:
-        HTTPException(status_code=400, detail="stream not supported")
-
     """
     # construct messages template
     messages = [
@@ -83,6 +80,11 @@ async def create_chat_completion(request: ChatCompletionRequest):
     for message in request.messages:
         messages.append({"role": message.role, "content": message.content})
 
+    # TODO: implement the following logic
+    if request.stream:
+        # HTTPException(status_code=400, detail="stream not supported")
+        generate = stream_chat_warpper(messages, request.model)
+        return EventSourceResponse(generate, media_type="text/event-stream")
     # call qwen generate
     response = qwen_model.generate_response(messages)
     # make
@@ -106,6 +108,54 @@ async def create_chat_completion(request: ChatCompletionRequest):
         object="chat.completion",
     )
     return res
+
+
+async def stream_chat_warpper(message: List[List[str]], model_id: str):
+    global model, tokenizer
+
+    # 3. 初始化响应数据
+    choice_data = ChatCompletionResponseStreamChoice(
+        index=0, delta=DeltaMessage(role="assistant"), finish_reason=None
+    )
+    chunk = ChatCompletionResponse(
+        model=model_id, choices=[choice_data], object="chat.completion.chunk"
+    )
+
+    # - 创建一个初始的 `ChatCompletionResponseStreamChoice` 对象，表示助手角色的响应。
+    # - 创建一个 `ChatCompletionResponse` 对象，并将其转换为 JSON 格式后返回。
+    yield "{}".format(chunk.model_dump_json(exclude_unset=True))
+
+    # 4. 初始化当前长度
+    current_length = 0
+
+    # 5. 处理模型的流式响应
+    for new_response in qwen_model.stream_chat(message):
+        # - 如果新响应的长度与当前长度相同，则跳过。
+        if len(new_response) == current_length:
+            continue
+        print(new_response)
+        # - 否则，提取新文本并更新当前长度。
+        new_text = new_response[current_length:]
+        current_length = len(new_response)
+
+        # - 创建新的 `ChatCompletionResponseStreamChoice`
+        #  和 `ChatCompletionResponse` 对象，并将其转换为 JSON 格式后返回。
+        choice_data = ChatCompletionResponseStreamChoice(
+            index=0, delta=DeltaMessage(content=new_text), finish_reason=None
+        )
+        chunk = ChatCompletionResponse(
+            model=model_id, choices=[choice_data], object="chat.completion.chunk"
+        )
+        yield "{}".format(chunk.model_dump_json(exclude_unset=True))
+
+    choice_data = ChatCompletionResponseStreamChoice(
+        index=0, delta=DeltaMessage(), finish_reason="stop"
+    )
+    chunk = ChatCompletionResponse(
+        model=model_id, choices=[choice_data], object="chat.completion.chunk"
+    )
+    yield "{}".format(chunk.model_dump_json(exclude_unset=True))
+    yield "[DONE]"
 
 
 @app.websocket("/ws")
