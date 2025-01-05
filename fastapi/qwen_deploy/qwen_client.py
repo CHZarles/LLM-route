@@ -2,7 +2,7 @@ import asyncio
 import json
 import os
 import re
-from typing import List
+from typing import List, Tuple
 
 import requests
 import websockets
@@ -63,7 +63,7 @@ def request_http(messages: List[Dict[str, str]], stream: bool = False):
             print("Failed to get response:", response.status_code, response.text)
 
 
-def request_websocket(query::str, history: List[Tuple[str,str]]):
+async def request_websocket(query: str, history: List[Tuple[str, str]]):
     # wscat ws://localhost:8000/chat/completions/ws
     uri = "ws://localhost:8000/chat/completions/ws"
     async with websockets.connect(uri) as websocket:
@@ -81,26 +81,17 @@ def request_websocket(query::str, history: List[Tuple[str,str]]):
         print(f"Status: {output_data['status']}")
 
 
-if __main__ == "__main__":
-    #construct a messages with history
+if __name__ == "__main__":
+    # construct a messages with history
     messages = [
-            {
-                "role":"system"
-                "content": "You are a helpful assistant."
-            },
-            {
-                "role": "user",
-                "content": "一拳超人埼玉的朋友是谁"
-            },
-            {
-                "role": "assistant",
-                "content": "在《一拳超人》这部漫画中，埼玉（Saitama）最常被提及的朋友是杰诺斯（Genos）。杰诺斯是一位改造人，他在埼玉的帮助下从爆炸中生还，之后便成为了埼玉的弟子和室友。杰诺斯对埼玉非常尊敬，经常试图学习埼玉的“秘诀”，尽管埼玉本人认为自己只是通过普通的锻炼变得强大。"
-            },
-            {
-                "role": "user",
-                "content": "他们两个谁的等级高" 
-                }
-            ]
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "一拳超人埼玉的朋友是谁"},
+        {
+            "role": "assistant",
+            "content": "在《一拳超人》这部漫画中，埼玉（Saitama）最常被提及的朋友是杰诺斯（Genos）。杰诺斯是一位改造人，他在埼玉的帮助下从爆炸中生还，之后便成为了埼玉的弟子和室友。杰诺斯对埼玉非常尊敬，经常试图学习埼玉的“秘诀”，尽管埼玉本人认为自己只是通过普通的锻炼变得强大。",
+        },
+        {"role": "user", "content": "他们两个谁的等级高"},
+    ]
 
     # request the HTTP using the requests library
     request_http(messages, stream=False)
@@ -109,15 +100,11 @@ if __main__ == "__main__":
     print(" =============> request_http with stream=True  <============= ")
 
     # request the HTTP using curl
-    playload = {
-            "model": "qwen1.5-7b-chat",
-            "messages": messages,
-            "stream": False
-            }
+    playload = {"model": "qwen1.5-7b-chat", "messages": messages, "stream": False}
     curl_command = f"curl -X POST http://localhost:8000/v1/chat/completions -H 'Content-Type: application/json' -d '{json.dumps(playload)}'"
     os.system(curl_command)
     print(" ===========> request http with curl command stream=False <============ ")
-    playload["stream"]=True
+    playload["stream"] = True
     os.system(curl_command)
     print(" ===========> request http with curl command stream=True <============ ")
 
