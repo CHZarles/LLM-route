@@ -75,11 +75,11 @@ async def request_websocket(query: str, history: List[Tuple[str, str]]):
         while True:
             response = await websocket.recv()
             output_data = json.loads(response)
-            print(f"Response: {output_data['response']}")
-            print(f"History: {output_data['history']}")
-            print(f"Status: {output_data['status']}")
+            # print(f"Status: {output_data['status']}")
             if output_data["status"] == 200:
                 break
+            print(f"Response: {output_data['response']}")
+            # print(f"History: {output_data['history']}")
 
 
 if __name__ == "__main__":
