@@ -93,23 +93,27 @@ if __name__ == "__main__":
         {"role": "user", "content": "他们两个谁的等级高"},
     ]
 
-    # request the HTTP using the requests library
-    request_http(messages, stream=False)
-    print(" =============> request_http with stream=False <============= ")
-    request_http(messages, stream=True)
-    print(" =============> request_http with stream=True  <============= ")
-
     # request the HTTP using curl
     playload = {"model": "qwen1.5-7b-chat", "messages": messages, "stream": False}
     curl_command = f"curl -X POST http://localhost:8000/v1/chat/completions -H 'Content-Type: application/json' -d '{json.dumps(playload)}'"
+    print("\n ===========> request http with curl command stream=False <============ ")
     os.system(curl_command)
-    print(" ===========> request http with curl command stream=False <============ ")
     playload["stream"] = True
+    print("\n ===========> request http with curl command stream=True <============ ")
+    curl_command = f"curl -X POST http://localhost:8000/v1/chat/completions -H 'Content-Type: application/json' -d '{json.dumps(playload)}'"
     os.system(curl_command)
-    print(" ===========> request http with curl command stream=True <============ ")
+
+
+
+    # request the HTTP using the requests library
+    print("\n =============> request_http with stream=False <============= ")
+    request_http(messages, stream=False)
+    print("\n =============> request_http with stream=True  <============= ")
+    request_http(messages, stream=True)
+
 
     # request the websocket
+    print(" ===========> request websocket <============ ")
     query = messages[-1]["content"]
     history = [(m["role"], m["content"]) for m in messages[:-1]]
     asyncio.run(request_websocket(query, history))
-    print(" ===========> request websocket <============ ")
