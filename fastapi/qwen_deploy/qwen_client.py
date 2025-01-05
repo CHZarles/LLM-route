@@ -66,19 +66,20 @@ def request_http(messages: List[Dict[str, str]], stream: bool = False):
 async def request_websocket(query: str, history: List[Tuple[str, str]]):
     # wscat ws://localhost:8000/chat/completions/ws
     uri = "ws://localhost:8000/chat/completions/ws"
+    # receive the response until the server send messages with status 200
     async with websockets.connect(uri) as websocket:
         # Prepare the input JSON string
         input_data = {"query": query, "history": history}
         await websocket.send(json.dumps(input_data))
 
-        # Receive the output JSON string
-        response = await websocket.recv()
-        output_data = json.loads(response)
-
-        # Print the response
-        print(f"Response: {output_data['response']}")
-        print(f"History: {output_data['history']}")
-        print(f"Status: {output_data['status']}")
+        while True:
+            response = await websocket.recv()
+            output_data = json.loads(response)
+            print(f"Response: {output_data['response']}")
+            print(f"History: {output_data['history']}")
+            print(f"Status: {output_data['status']}")
+            if output_data["status"] == 200:
+                break
 
 
 if __name__ == "__main__":
@@ -103,14 +104,11 @@ if __name__ == "__main__":
     curl_command = f"curl -X POST http://localhost:8000/v1/chat/completions -H 'Content-Type: application/json' -d '{json.dumps(playload)}'"
     os.system(curl_command)
 
-
-
     # request the HTTP using the requests library
     print("\n =============> request_http with stream=False <============= ")
     request_http(messages, stream=False)
     print("\n =============> request_http with stream=True  <============= ")
     request_http(messages, stream=True)
-
 
     # request the websocket
     print(" ===========> request websocket <============ ")
