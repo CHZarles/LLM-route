@@ -104,7 +104,9 @@ if __main__ == "__main__":
 
     # request the HTTP using the requests library
     request_http(messages, stream=False)
+    print(" =============> request_http with stream=False <============= ")
     request_http(messages, stream=True)
+    print(" =============> request_http with stream=True  <============= ")
 
     # request the HTTP using curl
     playload = {
@@ -114,10 +116,13 @@ if __main__ == "__main__":
             }
     curl_command = f"curl -X POST http://localhost:8000/v1/chat/completions -H 'Content-Type: application/json' -d '{json.dumps(playload)}'"
     os.system(curl_command)
+    print(" ===========> request http with curl command stream=False <============ ")
     playload["stream"]=True
     os.system(curl_command)
+    print(" ===========> request http with curl command stream=True <============ ")
 
     # request the websocket
     query = messages[-1]["content"]
     history = [(m["role"], m["content"]) for m in messages[:-1]]
     asyncio.run(request_websocket(query, history))
+    print(" ===========> request websocket <============ ")
