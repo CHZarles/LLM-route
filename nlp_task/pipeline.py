@@ -98,7 +98,7 @@ train_args = Seq2SeqTrainingArguments(
     per_device_eval_batch_size=batch_size,
     weight_decay=0.01,
     save_total_limit=3,
-    num_train_epochs=30,
+    num_train_epochs=20,
     predict_with_generate=True,
     fp16=True,
 )
@@ -120,6 +120,7 @@ trainer = Seq2SeqTrainer(
 
 trainer.train()
 
+model.save_pretrained("./CharlesQuestinAnswer")
 
 # 7. 运行模型
 
@@ -132,5 +133,5 @@ context = "广州学英语,我认为一定要找对学校,否则花了钱还浪�
 input_str = "问题：{question}{sep_token}原文：{context}".format(
     question=question, context=context, sep_token=tokenizer.sep_token
 )
-print(input_str)
+# print(input_str)
 print(pipe(input_str))
