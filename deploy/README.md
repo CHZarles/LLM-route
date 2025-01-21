@@ -20,7 +20,7 @@ how this process can be divided into two phases, pre-fill and decode
 
 ## quantization function
 
-## Parameter effecient
+## Parameter efficient
 
 ### low rank adaptation
 
