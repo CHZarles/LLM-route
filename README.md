@@ -55,3 +55,7 @@
 > - 手撕Transformer，能头到尾全部推导一遍
 > - 手写核心模块Self-Attention的代码，最后达到不看公式也能写出来
 > - 完成Transformer项目的数据处理和加载，预训练模型微调，模型预测，指标计算的完整项目流程，并总结实验报告。
+
+## whole flow
+
+https://github.com/jingyaogong/minimind
