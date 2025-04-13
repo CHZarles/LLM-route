@@ -97,6 +97,9 @@ fastapi的异步并发web框架, https://fastapi.tiangolo.com/zh/async/#_1, 框�
 
 - 多线程模型无法预测task切换的代码位置，但是用协程异步可以，因为协程函数的切换位置就是 await 调用处
 
+- 推荐阅读(asyncio 系列):
+  - https://www.cnblogs.com/traditional/p/17357782.html
+  - https://www.cnblogs.com/traditional/p/17363960.html 
 #### 协程编程 gevent
 
 #### 实战
